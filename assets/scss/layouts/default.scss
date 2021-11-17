@@ -1,7 +1,3 @@
-@import '../config/variables.scss';
-@import '../config/fonts.scss';
-@import '../global/global.scss';
-
 .default {
-  border: 1px solid rebeccapurple;
+  border: 1px solid $primary;
 }

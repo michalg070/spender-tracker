@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="dashboard">
     <p>test mskmdsfmkdsdfm fdsl;fds lsfsd</p>
     <h1>daasdasads</h1>
   </div>

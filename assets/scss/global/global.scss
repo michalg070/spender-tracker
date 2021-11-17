@@ -6,6 +6,10 @@
   box-sizing: border-box;
 }
 
+html {
+  font-size: $fontSize;
+}
+
 body {
   font-family: $fontPrimary;
   font-weight: $fontWeightNormal;

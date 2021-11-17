@@ -1,5 +1,9 @@
 <template>
-  <div class="login">
+  <div class="layout-login">
     <Nuxt />
   </div>
 </template>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/layouts/login.scss';
+</style>
