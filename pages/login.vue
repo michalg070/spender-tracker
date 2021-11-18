@@ -1,28 +1,18 @@
 <template>
   <div class="login">
-    <h1>{{ dupa }}</h1>
-    <button @click="test">click</button>
-
-    <BaseCard> dfadssadssaas </BaseCard>
+    <BaseCard title="Zaloguj się" class="login__card" />
   </div>
 </template>
 
 <script>
-import { defineComponent, ref } from '@nuxtjs/composition-api'
+import { defineComponent } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   layout: 'login',
-  setup() {
-    const dupa = ref(null)
-
-    function test() {
-      dupa.value++
-    }
-
-    return {
-      dupa,
-      test,
-    }
-  },
+  setup() {},
 })
 </script>
+
+<style lang="scss" scoped>
+@import '@/assets/scss/pages/login.scss';
+</style>

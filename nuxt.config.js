@@ -37,7 +37,10 @@ export default {
   ],
 
   styleResources: {
-    scss: ['~/assets/scss/config/variables.scss'],
+    scss: [
+      '~/assets/scss/config/variables.scss',
+      '~/assets/scss/functions/rem-calc.scss',
+    ],
   },
 
   // Modules: https://go.nuxtjs.dev/config-modules

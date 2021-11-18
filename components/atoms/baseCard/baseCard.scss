@@ -1,4 +1,14 @@
 .base-card {
-  color: $primary;
-  font-size: 25px;
+  width: 100%;
+
+  padding: rem-calc(16px);
+
+  border: 1px solid $border;
+  border-radius: rem-calc(3px);
+
+  &__title {
+    font-size: rem-calc(18px);
+
+    margin-bottom: 1rem;
+  }
 }

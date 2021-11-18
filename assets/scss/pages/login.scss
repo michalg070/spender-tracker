@@ -1,0 +1,11 @@
+.login {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-height: 100vh;
+
+  &__card {
+    width: rem-calc(400px);
+  }
+}

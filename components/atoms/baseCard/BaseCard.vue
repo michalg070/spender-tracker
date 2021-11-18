@@ -1,6 +1,9 @@
 <template>
   <div class="base-card">
-    <div>dupa dupa dupa</div>
+    <p v-if="title" class="base-card__title" data-base-card-title>
+      {{ title }}
+    </p>
+
     <slot />
   </div>
 </template>
@@ -9,6 +12,13 @@
 import { defineComponent } from '@nuxtjs/composition-api'
 
 export default defineComponent({
+  props: {
+    title: {
+      type: String,
+      default: null,
+    },
+  },
+
   setup() {},
 })
 </script>

@@ -5,5 +5,5 @@
 </template>
 
 <style lang="scss" scoped>
-@import '@/assets/scss/layouts/login.scss';
+@import '@/assets/scss/layouts/layout-login.scss';
 </style>
