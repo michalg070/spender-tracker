@@ -1,6 +1,4 @@
 .base-card {
-  width: 100%;
-
   padding: rem-calc(16px);
 
   border: 1px solid $border;
@@ -8,6 +6,7 @@
 
   &__title {
     font-size: rem-calc(18px);
+    font-weight: $fontWeightMedium;
 
     margin-bottom: 1rem;
   }
