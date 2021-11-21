@@ -1,0 +1,73 @@
+.base-input {
+  $self: &;
+
+  display: flex;
+  flex-direction: column;
+
+  &--left {
+    flex-direction: row;
+    align-items: flex-start;
+
+    #{ $self }__label {
+      margin: rem-calc(8px) rem-calc(12px) 0 0;
+    }
+  }
+
+  &__label {
+    margin-bottom: rem-calc(4px);
+  }
+
+  &__input {
+    width: 100%;
+    height: rem-calc(34px);
+    padding: 0 rem-calc(12px);
+
+    background-color: $inputBackground;
+    border: 1px solid transparent;
+    border-radius: 3px;
+
+    font-family: $fontPrimary;
+    color: $fontPrimaryColor;
+
+    will-change: border;
+    transition: all 0.15s ease-out;
+
+    &:hover {
+      border: 1px solid $primary;
+    }
+
+    &:focus {
+      outline: none;
+      border: 1px solid $primary;
+      background-color: $inputFocusBackground;
+    }
+
+    &::placeholder {
+      color: $inputPlaceholderColor;
+      font-weight: $fontWeightMedium;
+    }
+
+    &--invalid {
+      border: 1px solid $error;
+
+      &:hover {
+        border: 1px solid $error;
+      }
+
+      &:focus {
+        border: 1px solid $error;
+        background-color: $inputFocusBackgroundError;
+      }
+    }
+  }
+
+  &__error {
+    font-size: rem-calc(11px);
+    font-weight: $fontWeightMedium;
+    color: $error;
+  }
+
+  &__wrapper {
+    width: 100%;
+  }
+}

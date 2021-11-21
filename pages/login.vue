@@ -1,11 +1,13 @@
 <template>
   <div class="login">
-    <BaseCard title="Zaloguj się" class="login__card" />
+    <BaseCard title="Zaloguj się" class="login__card">
+      <BaseInput name="login" label="Login" />
+    </BaseCard>
   </div>
 </template>
 
 <script>
-import { defineComponent } from '@nuxtjs/composition-api'
+import { defineComponent, ref, watch } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   layout: 'login',
