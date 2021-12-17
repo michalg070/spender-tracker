@@ -1,23 +1,29 @@
 <template>
   <div class="login">
     <BaseCard title="Zaloguj się" class="login__card">
-      <BaseInput name="login" label="Login" />
-
-      <EyeIcon width="12px" />
+      <BaseInput
+        v-model="password"
+        name="login"
+        label="Login"
+        type="password"
+        error="dsads"
+      />
     </BaseCard>
   </div>
 </template>
 
 <script>
-import { defineComponent } from '@nuxtjs/composition-api'
-import EyeIcon from '@/assets/images/svg/eye.svg'
+import { defineComponent, ref } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   layout: 'login',
-  components: {
-    EyeIcon,
+  setup() {
+    const password = ref('dsadss')
+
+    return {
+      password,
+    }
   },
-  setup() {},
 })
 </script>
 

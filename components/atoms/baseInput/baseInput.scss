@@ -17,6 +17,10 @@
     margin-bottom: rem-calc(4px);
   }
 
+  &__wrapper {
+    position: relative;
+  }
+
   &__input {
     width: 100%;
     height: rem-calc(34px);
@@ -59,6 +63,18 @@
         background-color: $inputFocusBackgroundError;
       }
     }
+
+    &--password {
+      padding-right: rem-calc(42px);
+    }
+  }
+
+  &__show-password {
+    position: absolute;
+    right: rem-calc(16px);
+    transform: translateY(-50%);
+
+    cursor: pointer;
   }
 
   &__error {
