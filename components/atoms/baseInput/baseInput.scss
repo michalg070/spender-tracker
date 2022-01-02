@@ -36,7 +36,7 @@
     will-change: border;
     transition: all 0.15s ease-out;
 
-    &:hover {
+    &:hover:not(:disabled) {
       border: 1px solid $primary;
     }
 
@@ -49,6 +49,11 @@
     &::placeholder {
       color: $inputPlaceholderColor;
       font-weight: $fontWeightMedium;
+    }
+
+    &:disabled {
+      color: $iconColor;
+      pointer-events: none;
     }
 
     &--invalid {

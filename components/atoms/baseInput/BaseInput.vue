@@ -45,6 +45,10 @@ import EyeOffIcon from '@/assets/images/svg/eye-off.svg'
 
 export default defineComponent({
   props: {
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
     error: {
       type: String,
       default: null,
@@ -90,7 +94,7 @@ export default defineComponent({
     EyeOffIcon,
   },
 
-  setup(props) {
+  setup(props, context) {
     const isPassowrdVisible = ref(false)
 
     const currentType = computed(() => {

@@ -2,26 +2,37 @@
   <div class="login">
     <BaseCard title="Zaloguj się" class="login__card">
       <BaseInput
-        v-model="password"
+        v-model="loginForm.login"
         name="login"
         label="Login"
+        type="text"
+        class="login__input"
+      />
+
+      <BaseInput
+        v-model="loginForm.password"
+        name="password"
+        label="Password"
         type="password"
-        error="dsads"
+        class="login__input"
       />
     </BaseCard>
   </div>
 </template>
 
 <script>
-import { defineComponent, ref } from '@nuxtjs/composition-api'
+import { defineComponent, reactive } from '@nuxtjs/composition-api'
 
 export default defineComponent({
   layout: 'login',
   setup() {
-    const password = ref('dsadss')
+    const loginForm = reactive({
+      login: null,
+      password: null,
+    })
 
     return {
-      password,
+      loginForm,
     }
   },
 })
