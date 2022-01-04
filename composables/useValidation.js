@@ -1,5 +1,5 @@
 import { onMounted, reactive } from '@nuxtjs/composition-api'
-import { rules } from '@/enums/validation'
+import { rules, errorMessages } from '@/enums/validation'
 
 export default function useValidation(validationSchema, formRef) {
   const form = formRef
@@ -22,6 +22,24 @@ export default function useValidation(validationSchema, formRef) {
     })
   }
 
+  function composeErrorMessage(schemaElement, rule) {
+    // TOOD: handle multiple error messages
+    // TODO: handle custom error messages
+    if (schemaElement.isValidated) {
+      schemaElement.error = null
+
+      return
+    }
+
+    switch (rule) {
+      case rules.REQUIRED: {
+        schemaElement.error = errorMessages(rules.REQUIRED)
+
+        break
+      }
+    }
+  }
+
   function composeValidation() {
     for (const schemaElement in validation) {
       validation[schemaElement] = {
@@ -29,6 +47,7 @@ export default function useValidation(validationSchema, formRef) {
         isValidated: true,
         error: null,
         value: '',
+        name: schemaElement,
       }
     }
   }
@@ -60,27 +79,18 @@ export default function useValidation(validationSchema, formRef) {
   }
 
   function validate(formElementName, elementRules) {
+    const schemaElement = validation[formElementName]
     setFormElementValue(formElementName)
 
+    // TODO: handle email, min/max length, sameAs, and custom validations (for example more than x less than y)
     if (elementRules.includes(rules.REQUIRED)) {
-      // TODO: make it smoother
-      validation[formElementName].isValidated =
-        validationRequired(formElementName)
-
-      // TODO: create error creator function
-      // TODO: create error messages enum
-      if (!validation[formElementName].isValidated) {
-        validation[formElementName].error = 'field is required'
-
-        return
-      }
-
-      validation[formElementName].error = null
+      schemaElement.isValidated = validateRequiredRule(schemaElement)
+      composeErrorMessage(schemaElement, rules.REQUIRED)
     }
   }
 
-  function validationRequired(formElementName) {
-    return !!validation[formElementName].value
+  function validateRequiredRule(schemaElement) {
+    return !!schemaElement.value
   }
 
   onMounted(() => {
