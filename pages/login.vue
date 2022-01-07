@@ -40,16 +40,27 @@ export default defineComponent({
 
     const validationSchema = {
       login: {
-        rules: [rules.REQUIRED, rules.EMAIL],
-        events: [validationEvents.BLUR],
+        rules: [
+          rules.REQUIRED,
+          {
+            ruleName: rules.EMAIL,
+            errorMessage: 'Email is bad man, fix it.',
+          },
+        ],
+        events: [validationEvents.BLUR, validationEvents.INPUT],
       },
       password: {
-        rules: [rules.REQUIRED],
+        rules: [
+          {
+            ruleName: rules.REQUIRED,
+            errorMessage: 'asdaaad',
+          },
+        ],
         events: [validationEvents.BLUR, validationEvents.INPUT],
       },
     }
 
-    const { validate, validation } = useValidation(
+    const { validateElement, validation } = useValidation(
       validationSchema,
       loginFormRef
     )
@@ -57,7 +68,7 @@ export default defineComponent({
     return {
       loginForm,
       loginFormRef,
-      validate,
+      validateElement,
       validation,
     }
   },

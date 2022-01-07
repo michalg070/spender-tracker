@@ -1,10 +1,11 @@
+import Vue from 'vue'
 import { onMounted, reactive } from '@nuxtjs/composition-api'
 import { rules, errorMessages } from '@/enums/validation'
 
 export default function useValidation(validationSchema, formRef) {
   const form = formRef
   const formElements = []
-  const validation = reactive({ ...validationSchema })
+  const validation = reactive({})
 
   function bindEventListeners() {
     formElements.forEach((formElement) => {
@@ -16,7 +17,7 @@ export default function useValidation(validationSchema, formRef) {
 
       validation[formElementName].events.forEach((event) => {
         formElement.addEventListener(event, () => {
-          validate(formElementName, validation[formElementName].rules)
+          validateElement(formElementName, validation[formElementName].rules)
         })
       })
     })
@@ -37,17 +38,43 @@ export default function useValidation(validationSchema, formRef) {
 
         break
       }
+
+      case rules.EMAIL: {
+        schemaElement.error = errorMessages(rules.EMAIL)
+
+        break
+      }
     }
   }
 
   function composeValidation() {
-    for (const schemaElement in validation) {
+    for (const schemaElement in validationSchema) {
+      Vue.set(validation, schemaElement, {})
+
       validation[schemaElement] = {
-        ...validation[schemaElement],
         isValidated: true,
         error: null,
         value: '',
         name: schemaElement,
+        events: [...validationSchema[schemaElement].events],
+        rules: [],
+      }
+
+      for (const rule of validationSchema[schemaElement].rules) {
+        if (typeof rule === 'object') {
+          validation[schemaElement].rules.push({ ...rule, isRulePassed: true })
+
+          continue
+        }
+
+        if (typeof rule === 'string') {
+          validation[schemaElement].rules.push({
+            ruleName: rule,
+            isRulePassed: true,
+          })
+
+          continue
+        }
       }
     }
   }
@@ -64,6 +91,14 @@ export default function useValidation(validationSchema, formRef) {
     }
   }
 
+  function isEmailRulePassed(elementValue) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(elementValue)
+  }
+
+  function isRequiredRulePassed(elementValue) {
+    return !!elementValue
+  }
+
   function setFormElementValue(formElementName) {
     const formElement = formElements.find(
       (el) => el.getAttribute('name') === formElementName
@@ -78,29 +113,55 @@ export default function useValidation(validationSchema, formRef) {
     validation[formElementName].value = formElement.value
   }
 
-  function validate(formElementName, elementRules) {
+  function validateElement(formElementName, elementRules) {
+    console.log(elementRules)
     const schemaElement = validation[formElementName]
     setFormElementValue(formElementName)
 
-    // TODO: handle email, min/max length, sameAs, and custom validations (for example more than x less than y)
-    if (elementRules.includes(rules.REQUIRED)) {
-      schemaElement.isValidated = validateRequiredRule(schemaElement)
-      composeErrorMessage(schemaElement, rules.REQUIRED)
+    for (const rule of elementRules) {
+      validationRuleResolver(schemaElement, rule.ruleName)
+
+      // TODO: improve sequence of error triggers OR display all errors in array (better this way)
+      // TODO: isValidated to true only when every isRulePassed passed..
+      if (!schemaElement.isValidated) {
+        break
+      }
     }
   }
 
-  function validateRequiredRule(schemaElement) {
-    return !!schemaElement.value
+  function validationRuleResolver(schemaElement, rule) {
+    console.log('dsaasdadads')
+    if (!rule) {
+      return
+    }
+
+    // TODO: handle email, min/max length, sameAs, and custom validations (for example more than x less than y)
+    switch (rule) {
+      case rules.REQUIRED: {
+        schemaElement.isValidated = isRequiredRulePassed(schemaElement.value)
+        composeErrorMessage(schemaElement, rules.REQUIRED)
+
+        break
+      }
+
+      case rules.EMAIL: {
+        schemaElement.isValidated = isEmailRulePassed(schemaElement.value)
+        composeErrorMessage(schemaElement, rules.EMAIL)
+
+        break
+      }
+    }
   }
 
+  composeValidation()
+
   onMounted(() => {
-    composeValidation()
     getFormElements()
     bindEventListeners()
   })
 
   return {
-    validate,
+    validateElement,
     validation,
   }
 }

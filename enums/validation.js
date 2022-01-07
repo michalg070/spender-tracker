@@ -3,9 +3,10 @@ export const errorMessages = (rule, fieldName = null) => {
     case rules.REQUIRED: {
       return `${fieldName || 'field'} is required.`
     }
+    case rules.EMAIL: {
+      return `Please provide correct email address.`
+    }
   }
-
-  return message
 }
 
 export const rules = {
