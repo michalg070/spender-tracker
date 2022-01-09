@@ -1,11 +1,36 @@
 import Vue from 'vue'
-import { onMounted, reactive } from '@nuxtjs/composition-api'
+import { onMounted, reactive, computed } from '@nuxtjs/composition-api'
 import { rules, errorMessages } from '@/enums/validation'
+import {
+  isEmailRulePassed,
+  isRequiredRulePassed,
+  maxLength,
+  minLength,
+} from '@/helpers/validationRules'
 
+// TODO: make validateForm function
 export default function useValidation(validationSchema, formRef) {
   const form = formRef
   const formElements = []
   const validation = reactive({})
+
+  const isValidate = computed(() => {
+    const elementsValidationResults = []
+
+    console.log(validation)
+
+    for (const schemaElement in validation) {
+      console.log(validation[schemaElement].isValidated)
+      elementsValidationResults.push(validation[schemaElement].isValidated)
+    }
+
+    console.log(elementsValidationResults)
+
+    return elementsValidationResults.every(
+      (validationResult) => validationResult
+    )
+    // return true
+  })
 
   function bindEventListeners() {
     formElements.forEach((formElement) => {
@@ -23,28 +48,24 @@ export default function useValidation(validationSchema, formRef) {
     })
   }
 
-  function composeErrorMessage(schemaElement, rule) {
-    // TOOD: handle multiple error messages
-    // TODO: handle custom error messages
+  function composeErrorMessage(schemaElement) {
     if (schemaElement.isValidated) {
-      schemaElement.error = null
-
-      return
+      return null
     }
 
-    switch (rule) {
-      case rules.REQUIRED: {
-        schemaElement.error = errorMessages(rules.REQUIRED)
+    let errorMessage = ''
 
-        break
-      }
-
-      case rules.EMAIL: {
-        schemaElement.error = errorMessages(rules.EMAIL)
-
-        break
+    for (const rule of schemaElement.rules) {
+      if (!rule.isRulePassed) {
+        errorMessage =
+          errorMessage +
+          '<br/>' +
+          (rule.errorMessage ||
+            errorMessages(rule.ruleName, rule.ruleParameter))
       }
     }
+
+    return errorMessage
   }
 
   function composeValidation() {
@@ -91,12 +112,8 @@ export default function useValidation(validationSchema, formRef) {
     }
   }
 
-  function isEmailRulePassed(elementValue) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(elementValue)
-  }
-
-  function isRequiredRulePassed(elementValue) {
-    return !!elementValue
+  function isElementValidated(schemaElement) {
+    return schemaElement.rules.every((rule) => rule.isRulePassed)
   }
 
   function setFormElementValue(formElementName) {
@@ -105,50 +122,75 @@ export default function useValidation(validationSchema, formRef) {
     )
 
     if (!formElement) {
-      validation[formElementName].value = ''
-
-      return
+      return ''
     }
 
-    validation[formElementName].value = formElement.value
+    return formElement.value
   }
 
   function validateElement(formElementName, elementRules) {
-    console.log(elementRules)
     const schemaElement = validation[formElementName]
-    setFormElementValue(formElementName)
+
+    schemaElement.value = setFormElementValue(formElementName)
 
     for (const rule of elementRules) {
       validationRuleResolver(schemaElement, rule.ruleName)
-
-      // TODO: improve sequence of error triggers OR display all errors in array (better this way)
-      // TODO: isValidated to true only when every isRulePassed passed..
-      if (!schemaElement.isValidated) {
-        break
-      }
     }
+
+    schemaElement.isValidated = isElementValidated(schemaElement)
+    schemaElement.error = composeErrorMessage(schemaElement)
   }
 
   function validationRuleResolver(schemaElement, rule) {
-    console.log('dsaasdadads')
     if (!rule) {
       return
     }
 
-    // TODO: handle email, min/max length, sameAs, and custom validations (for example more than x less than y)
+    const foundSchemaElementRule = schemaElement.rules.find((schemaRule) => {
+      return schemaRule.ruleName === rule
+    })
+
+    // TODO: numbers
     switch (rule) {
       case rules.REQUIRED: {
-        schemaElement.isValidated = isRequiredRulePassed(schemaElement.value)
-        composeErrorMessage(schemaElement, rules.REQUIRED)
+        foundSchemaElementRule.isRulePassed = isRequiredRulePassed(
+          schemaElement.value
+        )
 
         break
       }
-
       case rules.EMAIL: {
-        schemaElement.isValidated = isEmailRulePassed(schemaElement.value)
-        composeErrorMessage(schemaElement, rules.EMAIL)
+        foundSchemaElementRule.isRulePassed = isEmailRulePassed(
+          schemaElement.value
+        )
 
         break
+      }
+      case rules.MIN_LENGTH: {
+        foundSchemaElementRule.isRulePassed = minLength(
+          schemaElement.value,
+          foundSchemaElementRule.ruleParameter
+        )
+
+        break
+      }
+      case rules.MAX_LENGTH: {
+        foundSchemaElementRule.isRulePassed = maxLength(
+          schemaElement.value,
+          foundSchemaElementRule.ruleParameter
+        )
+
+        break
+      }
+      // custom rule
+      default: {
+        if (
+          foundSchemaElementRule.customRule &&
+          typeof foundSchemaElementRule.customRule === 'function'
+        ) {
+          foundSchemaElementRule.isRulePassed =
+            foundSchemaElementRule.customRule(schemaElement.value)
+        }
       }
     }
   }
@@ -161,6 +203,7 @@ export default function useValidation(validationSchema, formRef) {
   })
 
   return {
+    isValidate,
     validateElement,
     validation,
   }

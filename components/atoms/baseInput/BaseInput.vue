@@ -33,7 +33,7 @@
         width="16px"
       />
 
-      <small v-if="isInvalid" class="base-input__error">{{ error }}</small>
+      <small v-if="isInvalid" class="base-input__error" v-html="error"></small>
     </div>
   </div>
 </template>
