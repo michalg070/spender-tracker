@@ -17,8 +17,6 @@ export default function useValidation(validationSchema, formRef) {
   const isValidate = computed(() => {
     const elementsValidationResults = []
 
-    console.log(validation)
-
     for (const schemaElement in validation) {
       console.log(validation[schemaElement].isValidated)
       elementsValidationResults.push(validation[schemaElement].isValidated)
@@ -29,7 +27,6 @@ export default function useValidation(validationSchema, formRef) {
     return elementsValidationResults.every(
       (validationResult) => validationResult
     )
-    // return true
   })
 
   function bindEventListeners() {
