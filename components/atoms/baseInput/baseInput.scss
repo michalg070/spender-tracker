@@ -17,8 +17,14 @@
     margin-bottom: rem-calc(4px);
   }
 
-  &__wrapper {
+  &__container {
     position: relative;
+
+    &:hover {
+      #{$self}__input:not(:disabled) {
+        border: 1px solid $primary;
+      }
+    }
   }
 
   &__input {
@@ -35,10 +41,6 @@
 
     will-change: border;
     transition: all 0.15s ease-out;
-
-    &:hover:not(:disabled) {
-      border: 1px solid $primary;
-    }
 
     &:focus {
       outline: none;
@@ -74,12 +76,57 @@
     }
   }
 
-  &__show-password {
+  &__suffix {
     position: absolute;
     right: rem-calc(16px);
     transform: translateY(-50%);
 
-    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    svg {
+      width: 1rem;
+      cursor: pointer;
+    }
+
+    &__controls {
+      will-change: fill;
+      transition: fill 0.15s ease-out;
+
+      &:hover {
+        fill: $primary;
+      }
+
+      &--minus {
+        margin: 0 rem-calc(3px);
+      }
+
+      &--disabled {
+        fill: $iconColor;
+
+        cursor: default;
+        pointer-events: none;
+      }
+    }
+
+    &__clear {
+      opacity: 0;
+      pointer-events: none;
+
+      will-change: opacity, fill;
+      transition: opacity 0.15s ease-out, fill 0.15s ease-out;
+
+      &--visible {
+        opacity: 1;
+        pointer-events: unset;
+
+        &:hover {
+          fill: $primary;
+          cursor: pointer;
+        }
+      }
+    }
   }
 
   &__error {

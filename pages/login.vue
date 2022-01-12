@@ -13,6 +13,14 @@
         />
 
         <BaseInput
+          v-model="loginForm.age"
+          name="age"
+          label="Age"
+          type="number"
+          class="login__input"
+        />
+
+        <BaseInput
           v-model="loginForm.password"
           :error="validation.password.error"
           name="password"
@@ -37,6 +45,7 @@ export default defineComponent({
     const loginForm = reactive({
       login: null,
       password: null,
+      age: null,
     })
     const loginFormRef = ref(null)
 

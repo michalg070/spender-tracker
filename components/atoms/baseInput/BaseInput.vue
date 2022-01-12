@@ -8,30 +8,64 @@
     </label>
 
     <div class="base-input__wrapper">
-      <input
-        :id="name"
-        :value="value"
-        :name="name"
-        :placeholder="placeholder"
-        :type="currentType"
-        :class="{
-          'base-input__input--invalid': isInvalid,
-          'base-input__input--password': isPasswordType,
-        }"
-        :style="{ height: height + 'px' }"
-        class="base-input__input"
-        @blur="$emit('blur', $event.target.value)"
-        @input="$emit('input', $event.target.value)"
-      />
+      <div
+        class="base-input__container"
+        @mouseover="isHovered = true"
+        @mouseleave="isHovered = false"
+      >
+        <input
+          :id="name"
+          :value="value"
+          :name="name"
+          :placeholder="placeholder"
+          :type="currentType"
+          :class="{
+            'base-input__input--invalid': isInvalid,
+            'base-input__input--password': isPasswordType,
+          }"
+          :style="{ height: height + 'px' }"
+          class="base-input__input"
+          @blur="handleBlurEvent"
+          @input="$emit('input', $event.target.value)"
+          @focus="isFocused = true"
+        />
 
-      <component
-        v-if="isPasswordType"
-        :is="passwordIcon"
-        :style="showPasswordIconStyle"
-        @click="changePasswordVisibility"
-        class="base-input__show-password"
-        width="16px"
-      />
+        <!-- TODO: allow only numbers -->
+        <div
+          v-if="isNumberType || isPasswordType"
+          class="base-input__suffix"
+          :style="iconsTopDimensionStyle"
+        >
+          <template v-if="isNumberType">
+            <!-- TODO: handle clear -->
+            <ClearIcon
+              class="base-input__suffix__clear"
+              :class="{
+                'base-input__suffix__clear--visible': isHovered || isFocused,
+              }"
+            />
+            <!-- TODO: handle minus, emit up -->
+            <MinusIcon
+              class="
+                base-input__suffix__controls base-input__suffix__controls--minus
+              "
+            />
+            <!-- TODO: handle plus, emit up -->
+            <PlusIcon
+              class="
+                base-input__suffix__controls
+                base-input__suffix__controls--disabled
+              "
+            />
+          </template>
+
+          <component
+            v-if="isPasswordType"
+            :is="passwordIcon"
+            @click="changePasswordVisibility"
+          />
+        </div>
+      </div>
 
       <small v-if="isInvalid" class="base-input__error" v-html="error"></small>
     </div>
@@ -42,6 +76,9 @@
 import { computed, defineComponent, ref } from '@nuxtjs/composition-api'
 import EyeIcon from '@/assets/images/svg/eye.svg'
 import EyeOffIcon from '@/assets/images/svg/eye-off.svg'
+import PlusIcon from '@/assets/images/svg/plus.svg'
+import MinusIcon from '@/assets/images/svg/minus.svg'
+import ClearIcon from '@/assets/images/svg/clear.svg'
 
 export default defineComponent({
   props: {
@@ -90,14 +127,23 @@ export default defineComponent({
   },
 
   components: {
+    ClearIcon,
     EyeIcon,
     EyeOffIcon,
+    MinusIcon,
+    PlusIcon,
   },
 
   setup(props, context) {
+    const isHovered = ref(false)
+    const isFocused = ref(false)
     const isPassowrdVisible = ref(false)
 
     const currentType = computed(() => {
+      if (isNumberType.value) {
+        return 'text'
+      }
+
       if (!isPasswordType.value || !isPassowrdVisible.value) {
         return props.type
       }
@@ -111,6 +157,10 @@ export default defineComponent({
       return !!props.error
     })
 
+    const isNumberType = computed(() => {
+      return props.type === 'number'
+    })
+
     const isPasswordType = computed(() => {
       return props.type === 'password'
     })
@@ -119,7 +169,7 @@ export default defineComponent({
       return isPassowrdVisible.value ? 'EyeOffIcon' : 'EyeIcon'
     })
 
-    const showPasswordIconStyle = computed(() => {
+    const iconsTopDimensionStyle = computed(() => {
       return {
         top: `${props.height / 2}px`,
       }
@@ -129,14 +179,23 @@ export default defineComponent({
       isPassowrdVisible.value = !isPassowrdVisible.value
     }
 
+    function handleBlurEvent(event) {
+      context.emit('blur', event.target.value)
+      isFocused.value = false
+    }
+
     return {
       changePasswordVisibility,
       currentType,
+      handleBlurEvent,
+      isFocused,
+      isHovered,
       isInvalid,
+      isNumberType,
       isPasswordType,
       isPassowrdVisible,
       passwordIcon,
-      showPasswordIconStyle,
+      iconsTopDimensionStyle,
     }
   },
 })
