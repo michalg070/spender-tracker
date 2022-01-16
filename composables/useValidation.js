@@ -56,9 +56,9 @@ export default function useValidation(validationSchema, formRef) {
       if (!rule.isRulePassed) {
         errorMessage =
           errorMessage +
-          '<br/>' +
           (rule.errorMessage ||
-            errorMessages(rule.ruleName, rule.ruleParameter))
+            errorMessages(rule.ruleName, rule.ruleParameter)) +
+          '<br/>'
       }
     }
 

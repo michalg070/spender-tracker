@@ -26,36 +26,36 @@
           :style="{ height: height + 'px' }"
           class="base-input__input"
           @blur="handleBlurEvent"
-          @input="$emit('input', $event.target.value)"
+          @input="handleInputEvent"
           @focus="isFocused = true"
+          @keydown="handleKeyDownEvent"
+          ref="inputRef"
         />
 
-        <!-- TODO: allow only numbers -->
         <div
           v-if="isNumberType || isPasswordType"
           class="base-input__suffix"
           :style="iconsTopDimensionStyle"
         >
           <template v-if="isNumberType">
-            <!-- TODO: handle clear -->
             <ClearIcon
               class="base-input__suffix__clear"
               :class="{
                 'base-input__suffix__clear--visible': isHovered || isFocused,
               }"
+              @click="clearInput"
             />
-            <!-- TODO: handle minus, emit up -->
+
             <MinusIcon
               class="
                 base-input__suffix__controls base-input__suffix__controls--minus
               "
+              @click="changeNumberValue(changeTypes.DECREASE)"
             />
-            <!-- TODO: handle plus, emit up -->
+
             <PlusIcon
-              class="
-                base-input__suffix__controls
-                base-input__suffix__controls--disabled
-              "
+              class="base-input__suffix__controls"
+              @click="changeNumberValue(changeTypes.INCREASE)"
             />
           </template>
 
@@ -79,6 +79,11 @@ import EyeOffIcon from '@/assets/images/svg/eye-off.svg'
 import PlusIcon from '@/assets/images/svg/plus.svg'
 import MinusIcon from '@/assets/images/svg/minus.svg'
 import ClearIcon from '@/assets/images/svg/clear.svg'
+
+const changeTypes = {
+  INCREASE: 'increase',
+  DECREASE: 'decrease',
+}
 
 export default defineComponent({
   props: {
@@ -121,7 +126,7 @@ export default defineComponent({
       },
     },
     value: {
-      type: String,
+      type: [Number, String],
       default: null,
     },
   },
@@ -135,6 +140,7 @@ export default defineComponent({
   },
 
   setup(props, context) {
+    const inputRef = ref()
     const isHovered = ref(false)
     const isFocused = ref(false)
     const isPassowrdVisible = ref(false)
@@ -175,8 +181,49 @@ export default defineComponent({
       }
     })
 
+    function changeNumberValue(changeType) {
+      switch (changeType) {
+        case changeTypes.INCREASE: {
+          context.emit('input', props.value + 1)
+
+          break
+        }
+        case changeTypes.DECREASE: {
+          context.emit('input', props.value - 1)
+
+          break
+        }
+      }
+    }
+
     function changePasswordVisibility() {
       isPassowrdVisible.value = !isPassowrdVisible.value
+    }
+
+    function checkIsNumber(event) {
+      const charCode = event.keyCode
+      const isComaAlreadyExists = event.target.value.includes('.')
+      const isCharacterNotAllowed =
+        charCode > 31 &&
+        (charCode < 48 || charCode > 57) &&
+        charCode !== 189 &&
+        (isComaAlreadyExists ? true : charCode !== 190)
+
+      if (isCharacterNotAllowed) {
+        event.preventDefault()
+        return false
+      }
+
+      return true
+    }
+
+    function clearInput() {
+      context.emit('input', null)
+      focusInput()
+    }
+
+    function focusInput() {
+      inputRef.value.focus()
     }
 
     function handleBlurEvent(event) {
@@ -184,10 +231,38 @@ export default defineComponent({
       isFocused.value = false
     }
 
+    function handleInputEvent(event) {
+      if (!isNumberType.value) {
+        context.emit('input', event.target.value)
+      }
+    }
+
+    function handleKeyDownEvent(event) {
+      if (!isNumberType.value) {
+        return
+      }
+
+      if (checkIsNumber(event)) {
+        setTimeout(() => {
+          const inputValue = parseFloat(event.target.value)
+            ? parseFloat(event.target.value)
+            : event.target.value
+
+          context.emit('input', inputValue)
+        }, 0)
+      }
+    }
+
     return {
+      changeNumberValue,
       changePasswordVisibility,
+      changeTypes,
+      clearInput,
       currentType,
       handleBlurEvent,
+      handleInputEvent,
+      handleKeyDownEvent,
+      inputRef,
       isFocused,
       isHovered,
       isInvalid,

@@ -2,7 +2,6 @@
   <div class="login">
     <BaseCard title="Zaloguj się" class="login__card">
       <form autocomplete="rutjfkde" @submit.prevent ref="loginFormRef">
-        <!-- TODO: handle type NUMBER -->
         <BaseInput
           v-model="loginForm.login"
           :error="validation.login.error"
