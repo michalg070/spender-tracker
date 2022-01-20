@@ -6,6 +6,10 @@ import {
   isRequiredRulePassed,
   maxLength,
   minLength,
+  min,
+  max,
+  minOrEqual,
+  maxOrEqual,
 } from '@/helpers/validationRules'
 
 // TODO: make validateForm function
@@ -21,8 +25,6 @@ export default function useValidation(validationSchema, formRef) {
       console.log(validation[schemaElement].isValidated)
       elementsValidationResults.push(validation[schemaElement].isValidated)
     }
-
-    console.log(elementsValidationResults)
 
     return elementsValidationResults.every(
       (validationResult) => validationResult
@@ -67,6 +69,12 @@ export default function useValidation(validationSchema, formRef) {
 
   function composeValidation() {
     for (const schemaElement in validationSchema) {
+      if (!validationSchema[schemaElement].events) {
+        console.error(`You must provide events array to ${schemaElement} field`)
+
+        continue
+      }
+
       Vue.set(validation, schemaElement, {})
 
       validation[schemaElement] = {
@@ -122,7 +130,9 @@ export default function useValidation(validationSchema, formRef) {
       return ''
     }
 
-    return formElement.value
+    return isNaN(formElement.value)
+      ? formElement.value
+      : parseFloat(formElement.value)
   }
 
   function validateElement(formElementName, elementRules) {
@@ -147,7 +157,6 @@ export default function useValidation(validationSchema, formRef) {
       return schemaRule.ruleName === rule
     })
 
-    // TODO: numbers
     switch (rule) {
       case rules.REQUIRED: {
         foundSchemaElementRule.isRulePassed = isRequiredRulePassed(
@@ -163,6 +172,22 @@ export default function useValidation(validationSchema, formRef) {
 
         break
       }
+      case rules.MIN: {
+        foundSchemaElementRule.isRulePassed = min(
+          schemaElement.value,
+          foundSchemaElementRule.ruleParameter
+        )
+
+        break
+      }
+      case rules.MAX: {
+        foundSchemaElementRule.isRulePassed = max(
+          schemaElement.value,
+          foundSchemaElementRule.ruleParameter
+        )
+
+        break
+      }
       case rules.MIN_LENGTH: {
         foundSchemaElementRule.isRulePassed = minLength(
           schemaElement.value,
@@ -171,8 +196,24 @@ export default function useValidation(validationSchema, formRef) {
 
         break
       }
+      case rules.MIN_OR_EQUAL: {
+        foundSchemaElementRule.isRulePassed = minOrEqual(
+          schemaElement.value,
+          foundSchemaElementRule.ruleParameter
+        )
+
+        break
+      }
       case rules.MAX_LENGTH: {
         foundSchemaElementRule.isRulePassed = maxLength(
+          schemaElement.value,
+          foundSchemaElementRule.ruleParameter
+        )
+
+        break
+      }
+      case rules.MAX_OR_EQUAL: {
+        foundSchemaElementRule.isRulePassed = maxOrEqual(
           schemaElement.value,
           foundSchemaElementRule.ruleParameter
         )

@@ -13,6 +13,7 @@
 
         <BaseInput
           v-model="loginForm.age"
+          :error="validation.age.error"
           name="age"
           label="Age"
           type="number"
@@ -51,7 +52,6 @@ export default defineComponent({
     const validationSchema = {
       login: {
         rules: [
-          rules.REQUIRED,
           {
             ruleName: rules.EMAIL,
             errorMessage: 'Email is bad man, fix it.',
@@ -77,6 +77,20 @@ export default defineComponent({
           },
         ],
         events: [validationEvents.BLUR, validationEvents.INPUT],
+      },
+      age: {
+        rules: [
+          {
+            ruleName: rules.MAX,
+            ruleParameter: 100,
+          },
+          {
+            ruleName: rules.MIN_OR_EQUAL,
+            ruleParameter: 18,
+            errorMessage: 'You must be old, or you cant drink',
+          },
+        ],
+        events: [validationEvents.BLUR],
       },
     }
 
