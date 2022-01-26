@@ -1,7 +1,7 @@
 <template>
   <div class="login">
     <BaseCard title="Zaloguj się" class="login__card">
-      <form autocomplete="rutjfkde" @submit.prevent ref="loginFormRef">
+      <form @submit.prevent="submit" ref="loginFormRef">
         <BaseInput
           v-model="loginForm.login"
           :error="validation.login.error"
@@ -28,6 +28,8 @@
           type="password"
           class="login__input"
         />
+
+        <button type="submit">submit</button>
       </form>
     </BaseCard>
   </div>
@@ -94,16 +96,22 @@ export default defineComponent({
       },
     }
 
-    const { validateElement, validation, isValidate } = useValidation(
+    const { validateForm, validation, isValidate } = useValidation(
       validationSchema,
       loginFormRef
     )
+
+    function submit() {
+      validateForm()
+      console.log(isValidate.value)
+    }
 
     return {
       isValidate,
       loginForm,
       loginFormRef,
-      validateElement,
+      submit,
+      validateForm,
       validation,
     }
   },

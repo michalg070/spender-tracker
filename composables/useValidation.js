@@ -12,7 +12,6 @@ import {
   maxOrEqual,
 } from '@/helpers/validationRules'
 
-// TODO: make validateForm function
 export default function useValidation(validationSchema, formRef) {
   const form = formRef
   const formElements = []
@@ -22,7 +21,6 @@ export default function useValidation(validationSchema, formRef) {
     const elementsValidationResults = []
 
     for (const schemaElement in validation) {
-      console.log(validation[schemaElement].isValidated)
       elementsValidationResults.push(validation[schemaElement].isValidated)
     }
 
@@ -148,6 +146,18 @@ export default function useValidation(validationSchema, formRef) {
     schemaElement.error = composeErrorMessage(schemaElement)
   }
 
+  function validateForm() {
+    formElements.forEach((formElement) => {
+      const formElementName = formElement.getAttribute('name')
+
+      if (!validation[formElementName]) {
+        return
+      }
+
+      validateElement(formElementName, validation[formElementName].rules)
+    })
+  }
+
   function validationRuleResolver(schemaElement, rule) {
     if (!rule) {
       return
@@ -242,7 +252,7 @@ export default function useValidation(validationSchema, formRef) {
 
   return {
     isValidate,
-    validateElement,
+    validateForm,
     validation,
   }
 }
