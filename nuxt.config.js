@@ -53,6 +53,11 @@ export default {
   // Axios module configuration: https://go.nuxtjs.dev/config-axios
   axios: {},
 
+  env: {
+    signUpUrl: 'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=',
+    fbApiKey: 'AIzaSyDRFIMFtUOjL06UhbIgU2yW9QWbySdYajM',
+  },
+
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
     extend: (config) => {
