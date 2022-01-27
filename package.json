@@ -16,7 +16,8 @@
     "@nuxtjs/axios": "^5.13.6",
     "@nuxtjs/composition-api": "^0.30.0",
     "core-js": "^3.15.1",
-    "nuxt": "^2.15.7"
+    "nuxt": "^2.15.7",
+    "vuex-composition-helpers": "^1.1.0"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.14.7",

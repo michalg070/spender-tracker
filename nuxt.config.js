@@ -60,6 +60,7 @@ export default {
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
+    transpile: ['vuex-composition-helpers'],
     extend: (config) => {
       const svgRule = config.module.rules.find((rule) => rule.test.test('.svg'))
 

@@ -28,8 +28,11 @@
 
 <script>
 import { defineComponent, reactive, ref } from '@nuxtjs/composition-api'
+import { createNamespacedHelpers } from 'vuex-composition-helpers/dist'
 import useValidation from '@/composables/useValidation'
 import { rules, validationEvents } from '@/enums/validation'
+
+const { useActions } = createNamespacedHelpers('auth')
 
 export default defineComponent({
   layout: 'auth',
@@ -39,12 +42,20 @@ export default defineComponent({
       password: null,
     })
     const loginFormRef = ref(null)
+    const { setUserToken, setUserEmail, setRefreshToken, setTokenExpiresIn } =
+      useActions([
+        'setUserToken',
+        'setUserEmail',
+        'setRefreshToken',
+        'setTokenExpiresIn',
+      ])
 
-    // rules object:
-    // ruleName: string,
-    // ruleParameter?: string | number,
-    // errorMessage?: string,
-    // customRule: () => void
+    // rules object: {
+    //  ruleName: string,
+    //  ruleParameter?: string | number,
+    //  errorMessage?: string,
+    //  customRule: () => void
+    // }
     const validationSchema = {
       email: {
         rules: [
@@ -71,8 +82,13 @@ export default defineComponent({
       loginFormRef
     )
 
+    // TODO: create authType flag,
+    // TODO: handle switch between signIn/signUp
+    // TODO: store & refresh token
     function submitSignUp() {
       validateForm()
+
+      console.log(Date.now())
 
       if (!isValidate.value) {
         return
@@ -89,6 +105,10 @@ export default defineComponent({
         .$post(signUpUrl, signUpData)
         .then((res) => {
           console.log(res)
+          setUserToken(res.idToken)
+          setUserEmail(res.email)
+          setRefreshToken(res.refreshToken)
+          setTokenExpiresIn(res.expiresIn)
         })
         .catch((err) => {
           console.log(err)

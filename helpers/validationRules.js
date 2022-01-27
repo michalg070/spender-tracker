@@ -23,7 +23,7 @@ export function max(value, limit) {
 }
 
 export function minLength(value, length) {
-  return value.length > length
+  return String(value).length > length
 }
 
 export function minOrEqual(value, limit) {
@@ -35,7 +35,7 @@ export function minOrEqual(value, limit) {
 }
 
 export function maxLength(value, length) {
-  return value.length < length
+  return String(value).length < length
 }
 
 export function maxOrEqual(value, limit) {
