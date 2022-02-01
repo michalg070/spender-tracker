@@ -1,0 +1,99 @@
+.base-button {
+  position: relative;
+
+  display: inline-block;
+  justify-content: center;
+  align-items: center;
+
+  cursor: pointer;
+
+  border-radius: rem-calc(3px);
+  padding: 0 rem-calc(20px);
+  margin: 20px 0;
+
+  border: 1px solid $border;
+  background-color: $background;
+  
+  color: $fontPrimaryColor;
+  font-family: $fontPrimary;
+  
+
+  will-change: border color box-shadow background-color;
+  transition: all 0.15s ease-out;
+
+  &:disabled {
+    color: $iconColor;
+    pointer-events: none;
+  }
+
+  &:hover {
+    color: var(--current-color);
+    border: 1px solid var(--current-color);
+  }
+
+  &--block {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &--outlined {
+    color: var(--current-color);
+    border: 1px solid var(--current-color);
+
+    &:disabled {
+      color: $iconColor;
+      border: 1px solid $iconColor;
+    }
+
+    &:hover {
+      box-shadow: 0 0 1px 1px var(--current-color);
+    }
+  }
+
+  &--filled {
+    background-color: var(--current-color);
+    color: $background;
+
+    &:disabled {
+      background-color: $iconColor;
+    }
+
+    &:hover {
+      box-shadow: 0 0 1px 1px var(--current-color);
+      color: $background;
+    }
+  }
+
+  &--x-small {
+    font-size: rem-calc(9px);
+    height: rem-calc(24px);
+    line-height: rem-calc(24px);
+  }
+
+  &--small {
+    font-size: rem-calc(12px);
+    height: rem-calc(29px);
+    line-height: rem-calc(29px);
+  }
+
+  &--normal {
+    font-size: rem-calc(16px);
+    height: rem-calc(34px);
+    line-height: rem-calc(34px);
+  }
+
+  &--large {
+    font-size: rem-calc(18px);
+    height: rem-calc(39px);
+    line-height: rem-calc(39px);
+    padding: 0 rem-calc(25px);
+  }
+
+  &--x-large {
+    font-size: rem-calc(20px);
+    height: rem-calc(44px);
+    line-height: rem-calc(44px);
+    padding: 0 rem-calc(30px);
+  }
+}

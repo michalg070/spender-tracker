@@ -1,0 +1,50 @@
+.loading-button {
+  $self: &;
+
+  display: flex;
+
+  &__loader {
+    width: 0;
+    height: 100%;
+
+    will-change: opacity width;
+    transition: 0.4s;
+
+    &::after {
+      content: "";
+      position: absolute;
+      width: 0px;
+      height: 0px;
+
+      will-change:  width;
+      transition: 0s 0.2s;
+    }
+  }
+  
+  &--isLoading {
+    pointer-events: none;
+    opacity: 0.5;
+
+    #{$self}__loader {
+      height: 100%;
+      width: 30px;
+
+      transform: translateX(50%);
+
+      &::after {
+        content: "";
+        position: absolute;
+        width: 16px;
+        height: 16px;
+        top: 8px;
+        right: 8px;
+
+        border: 3px solid transparent;
+        border-top-color: var(--loader-color);
+        border-radius: 50%;
+
+        animation: button-loading-spinner 0.8s ease infinite;
+      }
+    }
+  }
+}
