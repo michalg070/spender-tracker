@@ -93,7 +93,6 @@ export default defineComponent({
     // TODO: store & refresh token
     function submitSignUp() {
       validateForm()
-      isLoading.value = true;
 
       console.log(Date.now())
 
@@ -101,6 +100,7 @@ export default defineComponent({
         return
       }
 
+      isLoading.value = true;
       const signUpUrl = process.env.signUpUrl + process.env.fbApiKey
       const signUpData = {
         email: loginForm.email,
