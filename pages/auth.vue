@@ -20,7 +20,12 @@
           class="auth__input"
         />
 
-        <button type="submit">submit</button>
+        <LoadingButton
+          class="auth__button"
+          :outlined="true"
+          :is-loading="isLoading"
+          @click="submitSignUp"
+        > Zaloguj się </LoadingButton>
       </form>
     </BaseCard>
   </div>
@@ -81,6 +86,7 @@ export default defineComponent({
       validationSchema,
       loginFormRef
     )
+    const isLoading = ref(false)
 
     // TODO: create authType flag,
     // TODO: handle switch between signIn/signUp
@@ -94,6 +100,7 @@ export default defineComponent({
         return
       }
 
+      isLoading.value = true;
       const signUpUrl = process.env.signUpUrl + process.env.fbApiKey
       const signUpData = {
         email: loginForm.email,
@@ -109,13 +116,17 @@ export default defineComponent({
           setUserEmail(res.email)
           setRefreshToken(res.refreshToken)
           setTokenExpiresIn(res.expiresIn)
+          isLoading.value = false;
         })
         .catch((err) => {
           console.log(err)
+          isLoading.value = false;
         })
     }
 
+    
     return {
+      isLoading,
       isValidate,
       loginForm,
       loginFormRef,
@@ -129,4 +140,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 @import '@/assets/scss/pages/auth.scss';
+
+.auth {
+  &__button{
+    float: right;
+  }
+}
 </style>
